@@ -11,6 +11,7 @@ from pathlib import Path
 from llmverdict.config import RunConfig
 from llmverdict.engine.cache import ResponseCache
 from llmverdict.engine.runner import Runner
+from llmverdict.plugins import load_plugins
 from llmverdict.providers import build_provider
 from llmverdict.scorers import build_scorer
 from llmverdict.store import ResultStore
@@ -48,6 +49,7 @@ async def run_config(
     on_task_start: Callable[[str, TaskSpec], None] | None = None,
     on_result: Callable[[SampleResult], None] | None = None,
 ) -> list[CompletedRun]:
+    load_plugins(cfg.plugins)
     provider = build_provider(cfg.model)
     judge = build_provider(cfg.judge) if cfg.judge else None
     store = ResultStore(cfg.store_path)

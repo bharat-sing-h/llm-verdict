@@ -66,6 +66,8 @@ class RunConfig(BaseModel):
     execution: ExecutionConfig = Field(default_factory=ExecutionConfig)
     store_path: str = ".llmverdict/results.db"
     cache_path: str = ".llmverdict/cache.db"
+    #: modules imported before scorers are built; they register custom scorers
+    plugins: list[str] = Field(default_factory=list)
 
     #: directory relative dataset paths are resolved against (the config file's directory)
     base_dir: Path | None = Field(default=None, exclude=True)

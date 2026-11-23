@@ -73,7 +73,7 @@ pip install -e ".[dashboard]" && make dashboard   # explore runs in the browser
 | **Statistics** | Wilson/bootstrap CIs, exact McNemar, paired bootstrap, Cohen's κ (weighted), Spearman, all dependency-free and unit-tested against reference values |
 | **Reporting** | Markdown reports (renders in PRs and job summaries), JSON export, a Streamlit dashboard, p50/p95/p99 latency, token and cost accounting |
 | **Ops** | Typed CLI, SQLite results store, Docker image (non-root, multi-stage), GitHub Actions CI with an eval-gate job that runs this tool on itself |
-| **Quality** | 97 tests, 98% branch coverage, `mypy --strict`, ruff, tested on Python 3.10–3.13 |
+| **Quality** | 99 tests, 98% branch coverage, `mypy --strict`, ruff, tested on Python 3.10–3.13 |
 
 ## Architecture
 
@@ -207,18 +207,27 @@ model:
   target: my_app.rag:answer      # def answer(messages: list[dict]) -> str
 ```
 
-**Add a scorer**: subclass `Scorer` and register it:
+**Add a scorer with a plugin**: any importable module that registers scorers. No fork needed:
 
 ```python
-from llmverdict.scorers import SCORERS, Scorer
+# my_project/llmverdict_plugin.py
+from llmverdict.scorers import Scorer, register_scorer
 
+@register_scorer
 class Toxicity(Scorer):
     type_name = "toxicity"
     async def score(self, sample, output):
         return self._bool(my_classifier(output) < 0.5)
-
-SCORERS[Toxicity.type_name] = Toxicity
 ```
+
+```yaml
+plugins: [my_project.llmverdict_plugin]
+tasks:
+  - path: data/chats.jsonl
+    scorers: [toxicity]
+```
+
+[text2sql-forge](https://github.com/bharat-sing-h/text2sql-forge) uses this to add an execution-accuracy scorer for SQL.
 
 **Add a provider**: subclass `Provider`, implement `async generate(messages, params) -> ModelResponse`, and raise `ProviderError(retryable=...)` for failures.
 

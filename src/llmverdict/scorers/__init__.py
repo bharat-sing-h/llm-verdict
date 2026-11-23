@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, TypeVar
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -26,6 +26,17 @@ SCORERS: dict[str, type[Scorer]] = {
         LLMJudge,
     )
 }
+
+
+ScorerT = TypeVar("ScorerT", bound=type[Scorer])
+
+
+def register_scorer(cls: ScorerT) -> ScorerT:
+    """Class decorator that makes a custom scorer available to configs by its ``type_name``."""
+    if cls.type_name in SCORERS and SCORERS[cls.type_name] is not cls:
+        raise ValueError(f"scorer type {cls.type_name!r} is already registered")
+    SCORERS[cls.type_name] = cls
+    return cls
 
 
 class ScorerSpec(BaseModel):
@@ -57,4 +68,4 @@ def build_scorer(spec: ScorerSpec | str, *, judge: Provider | None = None) -> Sc
     return scorer
 
 
-__all__ = ["SCORERS", "Scorer", "ScorerSpec", "build_scorer"]
+__all__ = ["SCORERS", "Scorer", "ScorerSpec", "build_scorer", "register_scorer"]
