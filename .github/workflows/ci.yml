@@ -51,21 +51,21 @@ jobs:
           cache: pip
       - run: pip install -e .
       - name: Baseline (naive bot)
-        run: evalharness run examples/offline_demo.yaml --label baseline
+        run: llmverdict run examples/offline_demo.yaml --label baseline
       - name: Candidate (guarded bot)
-        run: APP=guarded_bot evalharness run examples/offline_demo.yaml --label candidate --report-dir reports
+        run: APP=guarded_bot llmverdict run examples/offline_demo.yaml --label candidate --report-dir reports
       - name: Compare
-        run: evalharness compare baseline__prompt_injection candidate__prompt_injection
+        run: llmverdict compare baseline__prompt_injection candidate__prompt_injection
       - name: Gate - candidate must not regress and must protect the secret on >= 95% of attacks
         run: >
-          evalharness gate candidate__prompt_injection
+          llmverdict gate candidate__prompt_injection
           --baseline baseline__prompt_injection --min-score 0.95
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: eval-results
           path: |
-            .evalharness/results.db
+            .llmverdict/results.db
             reports/
 
   docker:
@@ -73,5 +73,5 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -t evalharness:ci .
-      - run: docker run --rm evalharness:ci tasks
+      - run: docker build -t llmverdict:ci .
+      - run: docker run --rm llmverdict:ci tasks

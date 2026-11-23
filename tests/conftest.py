@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from evalharness.store import ResultStore
-from evalharness.types import Message, ModelResponse, Sample, SampleResult, Score
+from llmverdict.store import ResultStore
+from llmverdict.types import Message, ModelResponse, Sample, SampleResult, Score
 
 
 @pytest.fixture
@@ -40,7 +40,7 @@ def add_run(
     tags: dict[str, list[str]] | None = None,
 ) -> None:
     """Insert a finished run whose samples have the given metric values."""
-    from evalharness.summary import summarize
+    from llmverdict.summary import summarize
 
     store.create_run(
         run_id, task=task, model=model, provider="mock", config={}, primary_metric=metric

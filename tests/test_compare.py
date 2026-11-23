@@ -3,9 +3,9 @@ from __future__ import annotations
 import pytest
 from tests.conftest import add_run
 
-from evalharness.compare import GatePolicy, compare_runs, evaluate_gate
-from evalharness.report import render_comparison, render_gate, render_run
-from evalharness.store import ResultStore, RunNotFoundError
+from llmverdict.compare import GatePolicy, compare_runs, evaluate_gate
+from llmverdict.report import render_comparison, render_gate, render_run
+from llmverdict.store import ResultStore, RunNotFoundError
 
 N = 80
 

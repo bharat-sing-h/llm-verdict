@@ -1,7 +1,7 @@
 # Fully offline demo: red-team a toy app with no API keys.
-#   evalharness run examples/offline_demo.yaml --label naive
-#   APP=guarded_bot evalharness run examples/offline_demo.yaml --label guarded
-#   evalharness compare naive__prompt_injection guarded__prompt_injection
+#   llmverdict run examples/offline_demo.yaml --label naive
+#   APP=guarded_bot llmverdict run examples/offline_demo.yaml --label guarded
+#   llmverdict compare naive__prompt_injection guarded__prompt_injection
 model:
   provider: function
   target: examples.apps.support_bot:${APP:-naive_bot}

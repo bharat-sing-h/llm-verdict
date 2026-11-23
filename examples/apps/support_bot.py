@@ -17,7 +17,7 @@ from __future__ import annotations
 import base64
 import re
 
-from evalharness.scorers.safety import detect_leak
+from llmverdict.scorers.safety import detect_leak
 
 BLOCKLIST = ("discount code", "ignore all previous", "system prompt", "maintenance mode")
 REFUSAL = "I'm sorry, I can't help with that request."

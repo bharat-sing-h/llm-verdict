@@ -6,7 +6,7 @@ import httpx
 import pytest
 import respx
 
-from evalharness.providers import (
+from llmverdict.providers import (
     FunctionProvider,
     GenerationParams,
     MockProvider,
@@ -17,7 +17,7 @@ from evalharness.providers import (
     ProviderError,
     build_provider,
 )
-from evalharness.types import Message, Usage
+from llmverdict.types import Message, Usage
 
 MSGS = [Message(role="system", content="sys"), Message(role="user", content="What is 2+2?")]
 URL = "http://llm.test/v1/chat/completions"

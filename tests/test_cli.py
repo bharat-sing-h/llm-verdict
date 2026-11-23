@@ -6,9 +6,9 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from evalharness.cli import app
-from evalharness.config import expand_env, load_config
-from evalharness.harness import make_run_id
+from llmverdict.cli import app
+from llmverdict.config import expand_env, load_config
+from llmverdict.harness import make_run_id
 
 runner = CliRunner(env={"COLUMNS": "220"})
 
@@ -50,7 +50,7 @@ def workdir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         CONFIG.replace("STORE", str(tmp_path / "store")), encoding="utf-8"
     )
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("EVALHARNESS_DB", str(tmp_path / "store" / "results.db"))
+    monkeypatch.setenv("LLMVERDICT_DB", str(tmp_path / "store" / "results.db"))
     return tmp_path
 
 
@@ -127,7 +127,7 @@ def test_cli_errors(workdir: Path, tmp_path: Path) -> None:
 
 
 def test_cli_misc() -> None:
-    assert "evalharness" in runner.invoke(app, ["--version"]).output
+    assert "llmverdict" in runner.invoke(app, ["--version"]).output
     tasks = runner.invoke(app, ["tasks"])
     assert "prompt_injection" in tasks.output
 
@@ -138,7 +138,7 @@ def test_offline_demo_config_runs_red_team_against_toy_app(
     root = Path(__file__).resolve().parents[1]
     monkeypatch.chdir(root)
     db = tmp_path / "r.db"
-    monkeypatch.setenv("EVALHARNESS_DB", str(db))
+    monkeypatch.setenv("LLMVERDICT_DB", str(db))
     cfg = (root / "examples" / "offline_demo.yaml").read_text(encoding="utf-8")
     cfg_path = tmp_path / "demo.yaml"
     cfg_path.write_text(cfg + f"\nstore_path: {db}\n", encoding="utf-8")

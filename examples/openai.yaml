@@ -1,6 +1,6 @@
 # Hosted API (OpenAI shown; any OpenAI-compatible gateway works - e.g. OpenRouter, Together, Groq).
 #   export OPENAI_API_KEY=...
-#   evalharness run examples/openai.yaml --label gpt-4o-mini
+#   llmverdict run examples/openai.yaml --label gpt-4o-mini
 model:
   provider: openai_compat
   model: ${MODEL:-gpt-4o-mini}

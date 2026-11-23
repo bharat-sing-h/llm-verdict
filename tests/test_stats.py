@@ -4,7 +4,7 @@ import math
 
 import pytest
 
-from evalharness import stats
+from llmverdict import stats
 
 
 def test_mean_and_percentile() -> None:

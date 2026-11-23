@@ -1,6 +1,6 @@
-# llm-eval-harness
+# llm-verdict
 
-[![CI](https://github.com/bharat-sing-h/llm-eval-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/bharat-sing-h/llm-eval-harness/actions/workflows/ci.yml)
+[![CI](https://github.com/bharat-sing-h/llm-verdict/actions/workflows/ci.yml/badge.svg)](https://github.com/bharat-sing-h/llm-verdict/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%E2%80%933.13-blue)
 ![Coverage](https://img.shields.io/badge/coverage-98%25-brightgreen)
 ![mypy](https://img.shields.io/badge/mypy-strict-blue)
@@ -8,16 +8,16 @@
 
 **An evaluation and red-teaming framework for LLMs and LLM applications, with statistically sound model comparison and CI regression gates.**
 
-Most LLM evals stop at "model A scored 71%, model B scored 68%". That's not enough to ship on. `evalharness` answers the questions a team actually has to answer before changing a model or a prompt in production:
+Most LLM evals stop at "model A scored 71%, model B scored 68%". That's not enough to ship on. `llmverdict` answers the questions a team actually has to answer before changing a model or a prompt in production:
 
 - **Is the difference real or noise?** Paired significance tests (exact McNemar, paired bootstrap) and confidence intervals on every metric.
 - **Did anything get worse?** Per-slice breakdowns and per-sample regression lists.
 - **Is the system secure?** A prompt-injection suite with 15 attack techniques, scored objectively with canary tokens, plus benign controls so you see the security/utility trade-off.
 - **Can we trust model-graded metrics?** Measures LLM-as-judge agreement against human labels (Cohen's κ, quadratic-weighted κ, Spearman ρ, leniency bias) before you rely on the judge.
-- **Can we stop regressions automatically?** `evalharness gate` exits non-zero on a significant regression and posts a Markdown verdict to the GitHub job summary.
+- **Can we stop regressions automatically?** `llmverdict gate` exits non-zero on a significant regression and posts a Markdown verdict to the GitHub job summary.
 
 ```text
-$ evalharness compare naive__prompt_injection guarded__prompt_injection
+$ llmverdict compare naive__prompt_injection guarded__prompt_injection
 | Metric           | Baseline | Candidate | Δ        | 95% CI (Δ)    | p-value | Test          | Verdict     |
 |------------------|----------|-----------|----------|---------------|---------|---------------|-------------|
 | control_helpful  | 100.0%   | 100.0%    | +0.0 pp  | [+0.0, +0.0]  | 1.0000  | mcnemar_exact | no change   |
@@ -42,7 +42,7 @@ $ evalharness compare naive__prompt_injection guarded__prompt_injection
 ## Quickstart
 
 ```bash
-git clone https://github.com/bharat-sing-h/llm-eval-harness && cd llm-eval-harness
+git clone https://github.com/bharat-sing-h/llm-verdict && cd llm-verdict
 pip install -e ".[dev]"
 make demo
 ```
@@ -122,7 +122,7 @@ All built-in tasks are **procedurally generated from a seed**. Fresh instances c
 | `prompt_injection` | Secret extraction with 15 techniques (direct request, ignore-previous, authority claim, role-play, prompt extraction, translation, base64, spell-out, reverse, completion, fiction, structured dump, indirect injection, payload splitting, multilingual), plus benign controls | `secret_protected` |
 
 ```bash
-evalharness tasks   # list tasks with sample counts
+llmverdict tasks   # list tasks with sample counts
 ```
 
 The canary detector catches leaks that plain substring checks miss: spaced-out or re-punctuated characters, reversed text, base64, hex, ROT13, and a secret split across several sentences.
@@ -132,13 +132,13 @@ The canary detector catches leaks that plain substring checks miss: spaced-out o
 ```bash
 # Local models via Ollama (or vLLM / llama.cpp - anything OpenAI-compatible)
 ollama pull qwen2.5:7b && ollama pull llama3.1:8b
-evalharness run examples/ollama.yaml --label qwen7b
-MODEL=llama3.1:8b evalharness run examples/ollama.yaml --label llama8b
-evalharness compare qwen7b__math_reasoning llama8b__math_reasoning
+llmverdict run examples/ollama.yaml --label qwen7b
+MODEL=llama3.1:8b llmverdict run examples/ollama.yaml --label llama8b
+llmverdict compare qwen7b__math_reasoning llama8b__math_reasoning
 
 # Hosted APIs
 export OPENAI_API_KEY=...
-evalharness run examples/openai.yaml --label gpt-4o-mini --report-dir reports/
+llmverdict run examples/openai.yaml --label gpt-4o-mini --report-dir reports/
 ```
 
 A config is a short YAML file. `${VAR}` and `${VAR:-default}` are expanded from the environment:
@@ -158,7 +158,7 @@ tasks:
 execution: {concurrency: 16, rpm: 450, max_retries: 5, timeout_s: 120}
 ```
 
-Other commands: `evalharness runs`, `report <run>`, `export <run> out.jsonl`. Interrupted runs resume where they stopped: re-running the same `--label` only evaluates the missing or failed samples.
+Other commands: `llmverdict runs`, `report <run>`, `export <run> out.jsonl`. Interrupted runs resume where they stopped: re-running the same `--label` only evaluates the missing or failed samples.
 
 ## Statistical methodology
 
@@ -177,7 +177,7 @@ API and network errors are reported separately (`n_errors`) and never counted as
 A judge is itself a model with biases (leniency, preferring longer answers, preferring its own outputs). Before trusting a judge-based metric, measure the judge against human labels:
 
 ```bash
-evalharness calibrate examples/llm_judge.yaml examples/data/judge_calibration.jsonl
+llmverdict calibrate examples/llm_judge.yaml examples/data/judge_calibration.jsonl
 ```
 
 The output includes exact agreement, κ, quadratic-weighted κ, Spearman ρ, pass/fail precision and recall at the threshold, leniency bias, a confusion matrix, and the largest disagreements with the judge's reasoning. A judge can *rank* perfectly (ρ = 1) while making the wrong pass/fail call on every item; the tests include exactly that case. Replace the bundled illustrative labels with your annotators' labels on your own data.
@@ -185,7 +185,7 @@ The output includes exact agreement, κ, quadratic-weighted κ, Spearman ρ, pas
 ## CI regression gating
 
 ```bash
-evalharness gate candidate__my_task --baseline baseline__my_task --max-drop 0.02
+llmverdict gate candidate__my_task --baseline baseline__my_task --max-drop 0.02
 ```
 
 | Policy | Fails when | Use when |
@@ -210,7 +210,7 @@ model:
 **Add a scorer**: subclass `Scorer` and register it:
 
 ```python
-from evalharness.scorers import SCORERS, Scorer
+from llmverdict.scorers import SCORERS, Scorer
 
 class Toxicity(Scorer):
     type_name = "toxicity"
@@ -227,7 +227,7 @@ SCORERS[Toxicity.type_name] = Toxicity
 ```bash
 make install   # editable install with dev tools
 make check     # ruff + mypy --strict + pytest with coverage
-docker build -t evalharness . && docker run --rm -v "$PWD:/work" evalharness run examples/offline_demo.yaml
+docker build -t llmverdict . && docker run --rm -v "$PWD:/work" llmverdict run examples/offline_demo.yaml
 ```
 
 ## Roadmap

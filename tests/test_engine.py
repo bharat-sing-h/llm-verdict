@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from tests.conftest import make_sample
 
-from evalharness.engine import (
+from llmverdict.engine import (
     AsyncTokenBucket,
     ExecutionConfig,
     ResponseCache,
@@ -15,12 +15,12 @@ from evalharness.engine import (
     Runner,
     call_with_retry,
 )
-from evalharness.providers import GenerationParams, MockProvider, MockRule, Provider, ProviderError
-from evalharness.scorers import build_scorer
-from evalharness.scorers.base import Scorer
-from evalharness.store import ResultStore
-from evalharness.tasks import TaskSpec
-from evalharness.types import Message, ModelResponse, Sample, Score
+from llmverdict.providers import GenerationParams, MockProvider, MockRule, Provider, ProviderError
+from llmverdict.scorers import build_scorer
+from llmverdict.scorers.base import Scorer
+from llmverdict.store import ResultStore
+from llmverdict.tasks import TaskSpec
+from llmverdict.types import Message, ModelResponse, Sample, Score
 
 
 class FakeClock:

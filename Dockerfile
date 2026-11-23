@@ -14,6 +14,6 @@ COPY --from=build /wheels /wheels
 RUN pip install --no-cache-dir /wheels/* && rm -rf /wheels
 USER evals
 WORKDIR /work
-# Mount configs/datasets at /work and persist results with a volume on /work/.evalharness
-ENTRYPOINT ["evalharness"]
+# Mount configs/datasets at /work and persist results with a volume on /work/.llmverdict
+ENTRYPOINT ["llmverdict"]
 CMD ["--help"]

@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pytest
 
-from evalharness.calibration import LabeledExample, agreement_report, calibrate, load_labels
-from evalharness.providers import MockProvider, MockRule
-from evalharness.report import render_calibration
-from evalharness.scorers.judge import LLMJudge
+from llmverdict.calibration import LabeledExample, agreement_report, calibrate, load_labels
+from llmverdict.providers import MockProvider, MockRule
+from llmverdict.report import render_calibration
+from llmverdict.scorers.judge import LLMJudge
 
 
 def ex(i: int, human: int, response: str = "r") -> LabeledExample:

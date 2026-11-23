@@ -9,10 +9,10 @@ from pathlib import Path
 import jsonschema
 import pytest
 
-from evalharness.tasks import BUILTIN_TASKS, load_builtin, load_jsonl
-from evalharness.tasks import math_reasoning as mr
-from evalharness.tasks.json_extraction import SCHEMA
-from evalharness.tasks.prompt_injection import ATTACKS
+from llmverdict.tasks import BUILTIN_TASKS, load_builtin, load_jsonl
+from llmverdict.tasks import math_reasoning as mr
+from llmverdict.tasks.json_extraction import SCHEMA
+from llmverdict.tasks.prompt_injection import ATTACKS
 
 
 @pytest.mark.parametrize("name", sorted(BUILTIN_TASKS))

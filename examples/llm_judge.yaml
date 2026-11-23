@@ -1,7 +1,7 @@
 # Open-ended QA graded by an LLM judge, plus judge calibration against human labels.
 #
-#   evalharness calibrate examples/llm_judge.yaml examples/data/judge_calibration.jsonl
-#   evalharness run examples/llm_judge.yaml --label my-model
+#   llmverdict calibrate examples/llm_judge.yaml examples/data/judge_calibration.jsonl
+#   llmverdict run examples/llm_judge.yaml --label my-model
 #
 # Calibrate FIRST: if quadratic-weighted kappa vs. your human labels is low (< ~0.6),
 # fix the rubric or pick a stronger judge before trusting any judge-based number.

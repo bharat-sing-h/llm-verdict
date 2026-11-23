@@ -6,12 +6,12 @@ import codecs
 import pytest
 from tests.conftest import make_sample
 
-from evalharness.providers import MockProvider, MockRule
-from evalharness.scorers import SCORERS, ScorerSpec, build_scorer
-from evalharness.scorers.judge import JudgeParseError, LLMJudge, parse_verdict
-from evalharness.scorers.safety import detect_leak
-from evalharness.scorers.structured import extract_json
-from evalharness.scorers.text import extract_final_answer, normalize_text, parse_number
+from llmverdict.providers import MockProvider, MockRule
+from llmverdict.scorers import SCORERS, ScorerSpec, build_scorer
+from llmverdict.scorers.judge import JudgeParseError, LLMJudge, parse_verdict
+from llmverdict.scorers.safety import detect_leak
+from llmverdict.scorers.structured import extract_json
+from llmverdict.scorers.text import extract_final_answer, normalize_text, parse_number
 
 
 async def run(scorer_type: str, reference: object, output: str, **options: object) -> tuple:

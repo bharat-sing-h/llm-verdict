@@ -1,7 +1,7 @@
 """Streamlit dashboard over the results database.
 
     pip install -e ".[dashboard]"
-    streamlit run dashboard/app.py -- --db .evalharness/results.db
+    streamlit run dashboard/app.py -- --db .llmverdict/results.db
 """
 
 from __future__ import annotations
@@ -13,16 +13,16 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
-from evalharness.compare import compare_runs
-from evalharness.store import ResultStore
-from evalharness.summary import RunSummary
+from llmverdict.compare import compare_runs
+from llmverdict.store import ResultStore
+from llmverdict.summary import RunSummary
 
-st.set_page_config(page_title="LLM Eval Harness", layout="wide")
+st.set_page_config(page_title="LLM Verdict", layout="wide")
 
 
 def _args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--db", default=".evalharness/results.db")
+    parser.add_argument("--db", default=".llmverdict/results.db")
     return parser.parse_known_args()[0]
 
 
@@ -32,7 +32,7 @@ def pct(x: float | None) -> str:
 
 db_path = st.sidebar.text_input("Results DB", _args().db)
 if not Path(db_path).exists():
-    st.error(f"No database at `{db_path}`. Run `evalharness run <config>` first.")
+    st.error(f"No database at `{db_path}`. Run `llmverdict run <config>` first.")
     st.stop()
 # One connection per script run: Streamlit re-runs scripts on different threads, and sqlite3
 # connections must not cross threads. Opening SQLite is cheap.

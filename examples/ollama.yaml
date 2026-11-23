@@ -1,8 +1,8 @@
 # Evaluate a local model served by Ollama (https://ollama.com):
 #   ollama pull qwen2.5:7b
-#   evalharness run examples/ollama.yaml --label qwen7b
-#   MODEL=llama3.1:8b evalharness run examples/ollama.yaml --label llama8b
-#   evalharness compare qwen7b__math_reasoning llama8b__math_reasoning
+#   llmverdict run examples/ollama.yaml --label qwen7b
+#   MODEL=llama3.1:8b llmverdict run examples/ollama.yaml --label llama8b
+#   llmverdict compare qwen7b__math_reasoning llama8b__math_reasoning
 #
 # Works unchanged with vLLM (`vllm serve <model>`; base_url http://localhost:8000/v1),
 # llama.cpp server, LM Studio and any other OpenAI-compatible server.
