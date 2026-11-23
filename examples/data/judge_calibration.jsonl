@@ -1,0 +1,16 @@
+{"id": "cal-00", "question": "Why does the sky appear blue?", "response": "Because of Rayleigh scattering: air molecules scatter short blue wavelengths far more than red ones.", "human_score": 5}
+{"id": "cal-01", "question": "Why does the sky appear blue?", "response": "It reflects the colour of the oceans.", "human_score": 1}
+{"id": "cal-02", "question": "Why does the sky appear blue?", "response": "Light scatters in the atmosphere.", "human_score": 3}
+{"id": "cal-03", "question": "What is overfitting?", "response": "When a model memorises training data, including noise, and generalises poorly to new data.", "human_score": 5}
+{"id": "cal-04", "question": "What is overfitting?", "response": "When a model is too simple to capture the pattern.", "human_score": 1}
+{"id": "cal-05", "question": "What is overfitting?", "response": "When training accuracy is high.", "human_score": 2}
+{"id": "cal-06", "question": "What causes the seasons?", "response": "Earth's axial tilt changes how directly sunlight hits each hemisphere through the year.", "human_score": 5}
+{"id": "cal-07", "question": "What causes the seasons?", "response": "Earth is closer to the Sun in summer and farther in winter.", "human_score": 1}
+{"id": "cal-08", "question": "What causes the seasons?", "response": "The tilt of the Earth, and also partly the distance from the Sun.", "human_score": 3}
+{"id": "cal-09", "question": "Precision vs recall?", "response": "Precision = TP/(TP+FP); recall = TP/(TP+FN). Precision is about predicted positives being right; recall about finding all positives.", "human_score": 5}
+{"id": "cal-10", "question": "Precision vs recall?", "response": "They are the same thing measured differently.", "human_score": 1}
+{"id": "cal-11", "question": "Precision vs recall?", "response": "Precision is how accurate the model is, recall is how much it remembers.", "human_score": 2}
+{"id": "cal-12", "question": "Process vs thread?", "response": "Processes have separate memory; threads share memory within a process.", "human_score": 4}
+{"id": "cal-13", "question": "Process vs thread?", "response": "Threads are faster processes.", "human_score": 2}
+{"id": "cal-14", "question": "Why do LLMs hallucinate?", "response": "They predict plausible next tokens rather than retrieving verified facts, so gaps in knowledge produce fluent but wrong text.", "human_score": 5}
+{"id": "cal-15", "question": "Why do LLMs hallucinate?", "response": "Because they are trained on too little data.", "human_score": 2}

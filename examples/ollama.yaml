@@ -1,0 +1,30 @@
+# Evaluate a local model served by Ollama (https://ollama.com):
+#   ollama pull qwen2.5:7b
+#   evalharness run examples/ollama.yaml --label qwen7b
+#   MODEL=llama3.1:8b evalharness run examples/ollama.yaml --label llama8b
+#   evalharness compare qwen7b__math_reasoning llama8b__math_reasoning
+#
+# Works unchanged with vLLM (`vllm serve <model>`; base_url http://localhost:8000/v1),
+# llama.cpp server, LM Studio and any other OpenAI-compatible server.
+model:
+  provider: openai_compat
+  model: ${MODEL:-qwen2.5:7b}
+  base_url: ${BASE_URL:-http://localhost:11434/v1}
+  api_key_env: null
+
+params:
+  temperature: 0
+  max_tokens: 768
+  seed: 1234
+
+tasks:
+  - builtin: math_reasoning
+    options: { n: 300, seed: 7 }
+  - builtin: json_extraction
+    options: { n: 100, seed: 7 }
+  - builtin: prompt_injection
+    options: { n_variants: 4, seed: 7 }
+
+execution:
+  concurrency: 4        # local GPU: keep modest; raise for vLLM with batching
+  timeout_s: 300

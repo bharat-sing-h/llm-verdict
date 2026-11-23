@@ -1,0 +1,28 @@
+# Hosted API (OpenAI shown; any OpenAI-compatible gateway works - e.g. OpenRouter, Together, Groq).
+#   export OPENAI_API_KEY=...
+#   evalharness run examples/openai.yaml --label gpt-4o-mini
+model:
+  provider: openai_compat
+  model: ${MODEL:-gpt-4o-mini}
+  base_url: ${BASE_URL:-https://api.openai.com/v1}
+  api_key_env: OPENAI_API_KEY
+  pricing:              # USD per 1M tokens -> cost is reported per run
+    input_per_mtok: 0.15
+    output_per_mtok: 0.60
+
+params:
+  temperature: 0
+  max_tokens: 768
+
+tasks:
+  - builtin: math_reasoning
+    options: { n: 300, seed: 7 }
+  - builtin: json_extraction
+    options: { n: 100, seed: 7 }
+  - builtin: prompt_injection
+    options: { n_variants: 4, seed: 7 }
+
+execution:
+  concurrency: 16
+  rpm: 450              # stay under the account's rate limit instead of eating 429s
+  max_retries: 5

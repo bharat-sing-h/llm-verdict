@@ -1,0 +1,43 @@
+# Open-ended QA graded by an LLM judge, plus judge calibration against human labels.
+#
+#   evalharness calibrate examples/llm_judge.yaml examples/data/judge_calibration.jsonl
+#   evalharness run examples/llm_judge.yaml --label my-model
+#
+# Calibrate FIRST: if quadratic-weighted kappa vs. your human labels is low (< ~0.6),
+# fix the rubric or pick a stronger judge before trusting any judge-based number.
+# (The bundled calibration file is a small illustrative sample - replace it with labels
+# from your own annotators on your own data.)
+model:
+  provider: openai_compat
+  model: ${MODEL:-qwen2.5:7b}
+  base_url: ${BASE_URL:-http://localhost:11434/v1}
+  api_key_env: null
+
+judge:
+  provider: openai_compat
+  model: ${JUDGE_MODEL:-gpt-4o}
+  base_url: ${JUDGE_BASE_URL:-https://api.openai.com/v1}
+  api_key_env: OPENAI_API_KEY
+
+params:
+  temperature: 0
+  max_tokens: 400
+
+tasks:
+  - path: data/open_qa.jsonl
+    name: open_qa
+    scorers:
+      - type: llm_judge
+        name: correctness
+        options:
+          scale_min: 1
+          scale_max: 5
+          pass_threshold: 4
+          rubric: >
+            Score factual correctness and completeness against the reference answer.
+            5 = fully correct and complete; 3 = partially correct or missing a key point;
+            1 = wrong or misleading. Do not reward length or confident tone.
+      - token_f1
+
+execution:
+  concurrency: 4

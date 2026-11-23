@@ -1,0 +1,39 @@
+# Drop this into .github/workflows/ of an application repo to block PRs that degrade an
+# LLM feature. The baseline is evaluated from the target branch, the candidate from the PR.
+name: LLM eval gate
+
+on:
+  pull_request:
+    paths: ["prompts/**", "src/llm/**", "evals/**"]
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    env:
+      # one results DB shared by both runs (and every evalharness command)
+      EVALHARNESS_DB: ${{ github.workspace }}/.evalharness/results.db
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "evalharness @ git+https://github.com/bharat-sing-h/llm-eval-harness"
+
+      - name: Evaluate baseline (target branch)
+        run: |
+          git worktree add ../base ${{ github.event.pull_request.base.sha }}
+          cd ../base && evalharness run evals/config.yaml --label baseline
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Evaluate candidate (this PR)
+        run: evalharness run evals/config.yaml --label candidate
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Gate (writes a Markdown verdict to the job summary)
+        run: |
+          evalharness compare baseline__my_task candidate__my_task
+          evalharness gate candidate__my_task --baseline baseline__my_task --max-drop 0.02
